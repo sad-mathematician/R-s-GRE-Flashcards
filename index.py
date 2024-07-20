@@ -116,7 +116,7 @@ with st.sidebar:
         st.experimental_rerun()
 
 # Main content
-colored_header(label="Welcome to Rishabh's GRE Wordlist Prep!", description="Master vocabulary with interactive flashcards", color_name="blue-70")
+colored_header(label="Welcome to Rishabh's GRE Wordlist Prep!", description="Common Words I-VI", color_name="blue-70")
 add_vertical_space(2)
 
 col1, col2 = st.columns([2, 1])
