@@ -50,6 +50,9 @@ st.markdown("""
     background-color: #4B4B96;
     color: white;
 }
+.sidebar .sidebar-content img {
+    margin-bottom: 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -77,7 +80,7 @@ def toggle_meaning():
 
 # Sidebar
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Educational_Testing_Service_logo.svg/220px-Educational_Testing_Service_logo.svg.png", width=200)
+    st.image("https://upload.wikimedia.org/wikipedia/commons/e/e1/Educational_Testing_Service_logo.svg", width=200)
     st.title("GRE Prep Dashboard")
     st.write("Total words:", len(data))
     if st.button("Reset Progress"):
