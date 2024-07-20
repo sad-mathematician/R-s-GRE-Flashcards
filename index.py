@@ -13,9 +13,42 @@ st.markdown("""
 .big-font {
     font-size:30px !important;
     font-weight: bold;
+    color: #4B4B96;
 }
 .stButton>button {
     width: 100%;
+    background-color: #4B4B96;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.stButton>button:hover {
+    background-color: #3A3A7F;
+}
+.st-info-box {
+    background-color: #D9EAD3;
+    border-left: 5px solid #4B4B96;
+    padding: 10px;
+    border-radius: 5px;
+    color: #333;
+    font-size: 16px;
+}
+.st-example-box {
+    background-color: #FCE5CD;
+    border-left: 5px solid #FF9900;
+    padding: 10px;
+    border-radius: 5px;
+    color: #333;
+    font-size: 16px;
+    margin-top: 10px;
+}
+.sidebar .sidebar-content {
+    background-color: #4B4B96;
+    color: white;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -62,10 +95,10 @@ with col1:
     st.markdown(f'<p class="big-font">{data.iloc[st.session_state.randw]["word"]}</p>', unsafe_allow_html=True)
     
     if st.session_state.show_meaning:
-        st.info(data.iloc[st.session_state.randw]["definition"])
+        st.markdown(f'<div class="st-info-box">{data.iloc[st.session_state.randw]["definition"]}</div>', unsafe_allow_html=True)
         example = data.iloc[st.session_state.randw]["example"]
         if pd.notna(example):
-            st.markdown(f"**Example:** {example}")
+            st.markdown(f'<div class="st-example-box"><strong>Example:</strong> {example}</div>', unsafe_allow_html=True)
     else:
         st.info("Click 'Reveal Meaning' to see the definition")
 
