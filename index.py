@@ -1,41 +1,79 @@
 import streamlit as st
 import random
 import pandas as pd
-# streamlit run /Users/rishabhfuke/Desktop/Programming/flashcards_app/main.py
-st.title('Welcome to Rishabh GRE wordlist prep!')
-data = pd.read_csv('wordlist2.csv')
+from streamlit_extras.colored_header import colored_header
+from streamlit_extras.add_vertical_space import add_vertical_space
 
-# to ensure random value of var doesn't change on its own
+# Set page config
+st.set_page_config(page_title="GRE Wordlist Prep", page_icon="📚", layout="wide")
+
+# Custom CSS
+st.markdown("""
+<style>
+.big-font {
+    font-size:30px !important;
+    font-weight: bold;
+}
+.stButton>button {
+    width: 100%;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Load data
+@st.cache_data
+def load_data():
+    return pd.read_csv('wordlist2.csv')
+
+data = load_data()
+
+# Initialize session state variables
 if 'randw' not in st.session_state:
-    st.session_state.randw = random.randint(1, 324)
+    st.session_state.randw = random.randint(0, len(data) - 1)
+if 'show_meaning' not in st.session_state:
+    st.session_state.show_meaning = False
 
-# accessing the specific word
-word = data.iloc[st.session_state.randw]['word']
-meaning = data.iloc[st.session_state.randw]['definition']
+# Functions
+def next_word():
+    st.session_state.randw = random.randint(0, len(data) - 1)
+    st.session_state.show_meaning = False
 
-st.write(word)
+def toggle_meaning():
+    st.session_state.show_meaning = not st.session_state.show_meaning
 
-# buttons
-# count = 0
-seemeaning_msg = 'See what this means'
+# Sidebar
+with st.sidebar:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Educational_Testing_Service_logo.svg/220px-Educational_Testing_Service_logo.svg.png", width=200)
+    st.title("GRE Prep Dashboard")
+    st.write("Total words:", len(data))
+    if st.button("Reset Progress"):
+        st.session_state.clear()
+        st.experimental_rerun()
 
-def NextWord():
-    st.session_state.randw = random.randint(1, 324)
-    st.experimental_rerun()  # Rerun the script to update the displayed word
+# Main content
+colored_header(label="Welcome to Rishabh's GRE Wordlist Prep!", description="Master vocabulary with interactive flashcards", color_name="blue-70")
 
-# if count == 1:
-#     seemeaning_msg = 'Next word'
+add_vertical_space(2)
+
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.markdown(f'<p class="big-font">{data.iloc[st.session_state.randw]["word"]}</p>', unsafe_allow_html=True)
     
-seemeaning = st.button(seemeaning_msg)
+    if st.session_state.show_meaning:
+        st.info(data.iloc[st.session_state.randw]["definition"])
+    else:
+        st.info("Click 'Reveal Meaning' to see the definition")
 
-if seemeaning:
-    st.write(meaning)
-    # count += 1
-    # print(count)
+with col2:
+    st.button("Reveal Meaning" if not st.session_state.show_meaning else "Hide Meaning", on_click=toggle_meaning, key="reveal")
+    add_vertical_space(1)
+    st.button("Next Word", on_click=next_word)
 
+# Progress tracking (placeholder for future feature)
+add_vertical_space(2)
+st.progress(0.5, text="Progress Placeholder")
 
-# if count == 2:
-#     NextWord()
-
-if st.button('Next word'):
-    NextWord()
+# Footer
+st.markdown("---")
+st.write("Created by Rishabh Fuke | 2023")
