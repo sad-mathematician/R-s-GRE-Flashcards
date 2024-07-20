@@ -72,8 +72,6 @@ if 'randw' not in st.session_state:
     st.session_state.randw = random.randint(0, len(data) - 1)
 if 'show_meaning' not in st.session_state:
     st.session_state.show_meaning = False
-if 'seen_words' not in st.session_state:
-    st.session_state.seen_words = set()
 
 # Functions
 def next_word():
@@ -82,12 +80,9 @@ def next_word():
 
 def toggle_meaning():
     st.session_state.show_meaning = not st.session_state.show_meaning
-    if st.session_state.show_meaning:
-        st.session_state.seen_words.add(st.session_state.randw)
 
 # Sidebar
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/e/e1/Educational_Testing_Service_logo.svg", width=200)
     st.title("GRE Prep Dashboard")
     st.write("Total words:", len(data))
     if st.button("Reset Progress"):
@@ -116,12 +111,6 @@ with col2:
     st.button("Reveal Meaning" if not st.session_state.show_meaning else "Hide Meaning", on_click=toggle_meaning, key="reveal")
     add_vertical_space(1)
     st.button("Next Word", on_click=next_word)
-
-# Progress tracking
-add_vertical_space(2)
-progress = len(st.session_state.seen_words) / len(data)
-st.progress(progress)
-st.write(f"Progress: {len(st.session_state.seen_words)} out of {len(data)} words")
 
 # Footer
 st.markdown("---")
