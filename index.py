@@ -23,7 +23,8 @@ st.markdown("""
 # Load data
 @st.cache_data
 def load_data():
-    return pd.read_csv('wordlist2.csv')
+    data = pd.read_csv('wordlist2.csv', usecols=['word', 'definition', 'example'])
+    return data.dropna()
 
 data = load_data()
 
@@ -62,6 +63,9 @@ with col1:
     
     if st.session_state.show_meaning:
         st.info(data.iloc[st.session_state.randw]["definition"])
+        example = data.iloc[st.session_state.randw]["example"]
+        if pd.notna(example):
+            st.markdown(f"**Example:** {example}")
     else:
         st.info("Click 'Reveal Meaning' to see the definition")
 
