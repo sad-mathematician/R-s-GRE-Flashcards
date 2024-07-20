@@ -150,4 +150,4 @@ with col2:
 
 # Footer
 st.markdown("---")
-st.write("Created by Rishabh Fuke | 2023")
+st.write("Created by Rishabh Fuke | 2024")
