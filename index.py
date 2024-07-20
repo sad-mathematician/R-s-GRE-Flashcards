@@ -7,7 +7,7 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 # Set page config
 st.set_page_config(page_title="GRE Wordlist Prep", page_icon="📚", layout="wide")
 
-# Custom CSS
+# Custom CSS (unchanged)
 st.markdown("""
 <style>
 .big-font {
@@ -80,22 +80,34 @@ def load_data():
 data = load_data()
 
 # Initialize session state variables
-if 'randw' not in st.session_state:
-    st.session_state.randw = random.randint(0, len(data) - 1)
-if 'show_meaning' not in st.session_state:
-    st.session_state.show_meaning = False
 if 'seen_words' not in st.session_state:
     st.session_state.seen_words = set()
+if 'unseen_words' not in st.session_state:
+    st.session_state.unseen_words = set(range(len(data)))
+if 'current_word_index' not in st.session_state:
+    st.session_state.current_word_index = random.choice(list(st.session_state.unseen_words))
+if 'show_meaning' not in st.session_state:
+    st.session_state.show_meaning = False
 
 # Functions
 def next_word():
-    st.session_state.randw = random.randint(0, len(data) - 1)
-    st.session_state.show_meaning = False
+    if st.session_state.unseen_words:
+        st.session_state.current_word_index = random.choice(list(st.session_state.unseen_words))
+        st.session_state.show_meaning = False
+    else:
+        st.warning("You've seen all the words! Reset progress to start over.")
 
 def toggle_meaning():
     st.session_state.show_meaning = not st.session_state.show_meaning
     if st.session_state.show_meaning:
-        st.session_state.seen_words.add(st.session_state.randw)
+        st.session_state.seen_words.add(st.session_state.current_word_index)
+        st.session_state.unseen_words.remove(st.session_state.current_word_index)
+
+def reset_progress():
+    st.session_state.seen_words.clear()
+    st.session_state.unseen_words = set(range(len(data)))
+    st.session_state.current_word_index = random.choice(list(st.session_state.unseen_words))
+    st.session_state.show_meaning = False
 
 # Sidebar
 with st.sidebar:
@@ -112,20 +124,20 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     if st.button("Reset Progress"):
-        st.session_state.seen_words.clear()
+        reset_progress()
         st.experimental_rerun()
 
 # Main content
-colored_header(label="Welcome to Rishabh's GRE Wordlist Prep!", description="Common Words I-VI", color_name="blue-70")
+colored_header(label="Welcome to Rishabh's GRE Wordlist Prep!", description="Master vocabulary with interactive flashcards", color_name="blue-70")
 add_vertical_space(2)
 
 col1, col2 = st.columns([2, 1])
 with col1:
-    st.markdown(f'<p class="big-font">{data.iloc[st.session_state.randw]["word"]}</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="big-font">{data.iloc[st.session_state.current_word_index]["word"]}</p>', unsafe_allow_html=True)
     
     if st.session_state.show_meaning:
-        st.markdown(f'<div class="st-info-box">{data.iloc[st.session_state.randw]["definition"]}</div>', unsafe_allow_html=True)
-        example = data.iloc[st.session_state.randw]["example"]
+        st.markdown(f'<div class="st-info-box">{data.iloc[st.session_state.current_word_index]["definition"]}</div>', unsafe_allow_html=True)
+        example = data.iloc[st.session_state.current_word_index]["example"]
         if pd.notna(example):
             st.markdown(f'<div class="st-example-box"><strong>Example:</strong> {example}</div>', unsafe_allow_html=True)
     else:
@@ -138,4 +150,4 @@ with col2:
 
 # Footer
 st.markdown("---")
-st.write("Created by Rishabh Fuke | 2024")
+st.write("Created by Rishabh Fuke | 2023")
