@@ -62,8 +62,8 @@ st.markdown("""
 # Load data
 @st.cache_data
 def load_data():
-    data = pd.read_csv('wordlist2.csv', usecols=['word', 'definition', 'example'])
-    return data.dropna()
+    data = pd.read_csv('/mnt/data/wordlist2.csv', usecols=['word', 'definition', 'example'])
+    return data
 
 data = load_data()
 
@@ -72,6 +72,8 @@ if 'randw' not in st.session_state:
     st.session_state.randw = random.randint(0, len(data) - 1)
 if 'show_meaning' not in st.session_state:
     st.session_state.show_meaning = False
+if 'seen_words' not in st.session_state:
+    st.session_state.seen_words = set()
 
 # Functions
 def next_word():
@@ -80,13 +82,16 @@ def next_word():
 
 def toggle_meaning():
     st.session_state.show_meaning = not st.session_state.show_meaning
+    if st.session_state.show_meaning:
+        st.session_state.seen_words.add(st.session_state.randw)
 
 # Sidebar
 with st.sidebar:
     st.title("GRE Prep Dashboard")
     st.write("Total words:", len(data))
+    st.write("Unique words encountered:", len(st.session_state.seen_words))
     if st.button("Reset Progress"):
-        st.session_state.clear()
+        st.session_state.seen_words.clear()
         st.experimental_rerun()
 
 # Main content
